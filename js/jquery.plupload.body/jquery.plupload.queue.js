@@ -90,46 +90,56 @@ used as it is.
 			}
 		});
 
+        target.before(
+            '<div id="' + id + '_filelist_dg" class="' + id + '_filelist_dg" style="display:none; max-height: 90%;">' +
+                '<div class="modal-dialog">' +
+                    '<div class="modal-content">' +
+                        '<div class="modal-header">' +
+                            '<button type="button" class="close"  onclick="jQuery(\'#' + id + '_filelist_dg\').hide()"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
+                            '<h4 class="modal-title" id="' + id + '_filelist_dgLabel">Файлы загружаются</h4>' +
+                        '</div>' +
+                        '<div class="modal-body" id="' + id + '_filelist_dg_body">' +
+                            /*'<div class="plupload_filelist_header">' +
+                                //'<div class="plupload_file_name">' + _('Filename') + '</div>' +
+                                '<div class="plupload_file_action">&nbsp;</div>' +
+                                //'<div class="plupload_file_status"><span>' + _('Status') + '</span></div>' +
+                                '<div class="plupload_file_size">' + _('Size') + '</div>' +
+                                '<div class="plupload_clearer">&nbsp;</div>' +
+                            '</div>' +*/
+                            '<div class="plupload_progress">' +
+                                '<div class="plupload_progress_container">' +
+                                    '<div class="progress">' +
+                                        '<div class="progress-bar plupload_total_progress_bar progress-bar-striped active progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">&nbsp;</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="plupload_filelist_footer">' +
+                                '<div class="plupload_file_name">' +
+                                    '<div class="plupload_buttons">' +
+                                        '<a href="#" class="plupload_button plupload_add" id="' + id + '_browse">' + _('Add Files') + '</a>' +
+                                        '<a href="#" class="plupload_button plupload_start">' + _('Start Upload') + '</a>' +
+                                    '</div>' +
+                                        '<span class="plupload_upload_status"></span>' +
+                                    '</div>' +
+                                    '<div class="plupload_file_action"></div>' +
+                                    //'<div class="plupload_file_status"><span class="plupload_total_status">0%</span></div>' +
+                                    '<div class="plupload_file_size"><span class="plupload_total_file_size">0</span></div>' +
+                                '</div>' +
+                                '<div class="plupload_clearer">&nbsp;</div>' +
+                            '</div>' +
+                            '<ul id="' + id + '_filelist" class="plupload_filelist"></ul>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>'
+        );
+
 		target.prepend(
 			'<div class="plupload_wrapper plupload_scroll" style="width:100%; height: 100%">' +
 				'<div id="' + id + '_container" class="plupload_container" style="width:100%; height: 100%">' +
 					'<div class="plupload" style="width:100%; height: 100%">' +
-						'<div class="plupload_header">' +
-							'<div class="plupload_header_content">' +
-								'<div class="plupload_header_title">' + _('Select files') + '</div>' +
-								'<div class="plupload_header_text">' + _('Add files to the upload queue and click the start button.') + '</div>' +
-							'</div>' +
-						'</div>' +
-
 						'<div class="plupload_content" style="width:100%; height: 100%">' +
-							'<div class="plupload_filelist_header">' +
-								'<div class="plupload_file_name">' + _('Filename') + '</div>' +
-								'<div class="plupload_file_action">&nbsp;</div>' +
-								'<div class="plupload_file_status"><span>' + _('Status') + '</span></div>' +
-								'<div class="plupload_file_size">' + _('Size') + '</div>' +
-								'<div class="plupload_clearer">&nbsp;</div>' +
-							'</div>' +
-
-							'<ul id="' + id + '_filelist" class="plupload_filelist" style="width:100%; height: 100%"></ul>' +
-
-							'<div class="plupload_filelist_footer">' +
-								'<div class="plupload_file_name">' +
-									'<div class="plupload_buttons">' +
-										'<a href="#" class="plupload_button plupload_add" id="' + id + '_browse">' + _('Add Files') + '</a>' +
-										'<a href="#" class="plupload_button plupload_start">' + _('Start Upload') + '</a>' +
-									'</div>' +
-									'<span class="plupload_upload_status"></span>' +
-								'</div>' +
-								'<div class="plupload_file_action"></div>' +
-								'<div class="plupload_file_status"><span class="plupload_total_status">0%</span></div>' +
-								'<div class="plupload_file_size"><span class="plupload_total_file_size">0 b</span></div>' +
-								'<div class="plupload_progress">' +
-									'<div class="plupload_progress_container">' +
-										'<div class="plupload_progress_bar"></div>' +
-									'</div>' +
-								'</div>' +
-								'<div class="plupload_clearer">&nbsp;</div>' +
-							'</div>' +
+                            '<button class="btn btn-sm btn-default pull-right" onclick="jQuery(\'#' + id+'\').hide();"><span class="glyphicon glyphicon-remove"></span></button>' +
+							'<ul id="' + id + '_droparea" class="plupload_droparea" style="width:100%; height: 100%"></ul>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
@@ -138,7 +148,7 @@ used as it is.
 		);
 	}
 
-	$.fn.pluploadQueue = function(settings) {
+	$.fn.pluploadBody = function(settings) {
 		if (settings) {
 			this.each(function() {
 				var uploader, target, id, contents_bak;
@@ -162,7 +172,7 @@ used as it is.
 
 				// Enable drag/drop (see PostInit handler as well)
 				if (settings.dragdrop) {
-					settings.drop_element = id + '_filelist';
+					settings.drop_element = id + '_droparea';
 				}
 
 				uploader = new plupload.Uploader(settings);
@@ -195,15 +205,16 @@ used as it is.
 				}
 
 				function updateTotalProgress() {
-					$('span.plupload_total_status', target).html(uploader.total.percent + '%');
-					$('div.plupload_progress_bar', target).css('width', uploader.total.percent + '%');
-					$('span.plupload_upload_status', target).html(
+					//$('span.plupload_total_status'/*, target*/).html(uploader.total.percent + '%');
+					$('div.plupload_total_progress_bar').css('width', uploader.total.percent + '%');
+					$('span.plupload_upload_status'/*, target*/).html(
 						o.sprintf(_('Uploaded %d/%d files'), uploader.total.uploaded, uploader.files.length)
 					);
 				}
 
 				function updateList() {
-					var fileList = $('ul.plupload_filelist', target).html(''), inputCount = 0, inputHTML;
+                    jQuery('#' + id + '_filelist_dgLabel').html('Загрузка файлов...');
+					var fileList = $('#' + id + '_filelist').html(''), inputCount = 0, inputHTML;
 
 					$.each(uploader.files, function(i, file) {
 						inputHTML = '';
@@ -221,13 +232,17 @@ used as it is.
 							$('#' + id + '_count').val(inputCount);
 						}
 
-						fileList.append(
-							'<li id="' + file.id + '">' +
-								'<div class="plupload_file_name"><span>' + file.name + '</span></div>' +
+						fileList.prepend(
+							'<li id="' + file.id + '" class="plupload_file ui-state-default plupload_file_loading plupload_delete">' +
+								'<a class="plupload_delete"></a>' +
 								'<div class="plupload_file_action"><a href="#"></a></div>' +
-								'<div class="plupload_file_status">' + file.percent + '%</div>' +
-								'<div class="plupload_file_size">' + plupload.formatSize(file.size) + '</div>' +
-								'<div class="plupload_clearer">&nbsp;</div>' +
+                                '<div class="plupload_file_name"><span>' + file.name + '</span></div>' +
+                                //'<div class="plupload_file_status">' + file.percent + '%</div>' +
+                                '<div class="plupload_file_size">' + plupload.formatSize(file.size) + '</div>' +
+                                '<div class="progress">' +
+                                    '<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">&nbsp;</div>' +
+                                '</div>' +
+								//'<div class="plupload_clearer">&nbsp;</div>' +
 								inputHTML +
 							'</li>'
 						);
@@ -242,15 +257,15 @@ used as it is.
 						});
 					});
 
-					$('span.plupload_total_file_size', target).html(plupload.formatSize(uploader.total.size));
+					$('span.plupload_total_file_size').html(plupload.formatSize(uploader.total.size));
 
 					if (uploader.total.queued === 0) {
-						$('span.plupload_add_text', target).html(_('Add Files'));
+						$('span.plupload_add_text'/*, target*/).html(_('Add Files'));
 					} else {
-						$('span.plupload_add_text', target).html(o.sprintf(_('%d files queued'), uploader.total.queued));
+						$('span.plupload_add_text'/*, target*/).html(o.sprintf(_('%d files queued'), uploader.total.queued));
 					}
 
-					$('a.plupload_start', target).toggleClass('plupload_disabled', uploader.files.length == (uploader.total.uploaded + uploader.total.failed));
+					$('a.plupload_start'/*, target*/).toggleClass('plupload_disabled', uploader.files.length == (uploader.total.uploaded + uploader.total.failed));
 
 					// Scroll to end of file list
 					fileList[0].scrollTop = fileList[0].scrollHeight;
@@ -259,7 +274,7 @@ used as it is.
 
 					// Re-add drag message if there is no files
 					if (!uploader.files.length && uploader.features.dragdrop && uploader.settings.dragdrop) {
-						$('#' + id + '_filelist').append('<li class="plupload_droptext">' + _("Drag files here.") + '</li>');
+						$('#' + id + '_droparea').append('<li class="plupload_droptext"><span class="icon-upload-cloud"></span>' + _("Drag files here.") + '</li>');
 					}
 				}
 
@@ -310,7 +325,7 @@ used as it is.
 
 					$('#' + id + '_container').attr('title', 'Using runtime: ' + res.runtime);
 
-					$('a.plupload_start', target).click(function(e) {
+					$('a.plupload_start'/*, target*/).click(function(e) {
 						if (!$(this).hasClass('plupload_disabled')) {
 							uploader.start();
 						}
@@ -318,13 +333,18 @@ used as it is.
 						e.preventDefault();
 					});
 
-					$('a.plupload_stop', target).click(function(e) {
+					$('a.plupload_stop'/*, target*/).click(function(e) {
 						e.preventDefault();
 						uploader.stop();
 					});
 
-					$('a.plupload_start', target).addClass('plupload_disabled');
+					$('a.plupload_start'/*, target*/).addClass('plupload_disabled');
 				});
+
+                uploader.bind('FilesAdded', function(up, files) {
+                    uploader.start();
+                    jQuery('#' + id + '_filelist_dg').show();
+                });
 
 				uploader.bind("Error", function(up, err) {
 					var file = err.file, message;
@@ -358,7 +378,7 @@ used as it is.
 				uploader.bind("PostInit", function(up) {
 					// features are populated only after input components are fully instantiated
 					if (up.settings.dragdrop && up.features.dragdrop) {
-						$('#' + id + '_filelist').append('<li class="plupload_droptext">' + _("Drag files here.") + '</li>');
+						$('#' + id + '_droparea').append('<li class="plupload_droptext"><span class="icon-upload-cloud"></span></li>');
 					}
 				});
 
@@ -366,31 +386,34 @@ used as it is.
 
 				uploader.bind('StateChanged', function() {
 					if (uploader.state === plupload.STARTED) {
-						$('li.plupload_delete a,div.plupload_buttons', target).hide();
+						$('li.plupload_delete a,div.plupload_buttons'/*, target*/).hide();
 						uploader.disableBrowse(true);
 
-						$('span.plupload_upload_status,div.plupload_progress,a.plupload_stop', target).css('display', 'block');
-						$('span.plupload_upload_status', target).html('Uploaded ' + uploader.total.uploaded + '/' + uploader.files.length + ' files');
+						$('span.plupload_upload_status,div.plupload_progress,a.plupload_stop'/*, target*/).css('display', 'block');
+						$('span.plupload_upload_status'/*, target*/).html('Uploaded ' + uploader.total.uploaded + '/' + uploader.files.length + ' files');
 
 						if (settings.multiple_queues) {
-							$('span.plupload_total_status,span.plupload_total_file_size', target).show();
+							$('span.plupload_total_status,span.plupload_total_file_size'/*, target*/).show();
 						}
 					} else {
 						updateList();
-						$('a.plupload_stop,div.plupload_progress', target).hide();
-						$('a.plupload_delete', target).css('display', 'block');
+						$('a.plupload_stop,div.plupload_progress'/*, target*/).hide();
+						$('a.plupload_delete'/*, target*/).css('display', 'block');
 
 						if (settings.multiple_queues && uploader.total.uploaded + uploader.total.failed == uploader.files.length) {
-							$(".plupload_buttons,.plupload_upload_status", target).css("display", "inline");
+							$(".plupload_buttons,.plupload_upload_status"/*, target*/).css("display", "inline");
 							uploader.disableBrowse(false);
 
-							$(".plupload_start", target).addClass("plupload_disabled");
-							$('span.plupload_total_status,span.plupload_total_file_size', target).hide();
+							$(".plupload_start"/*, target*/).addClass("plupload_disabled");
+							$('span.plupload_total_status,span.plupload_total_file_size'/*, target*/).hide();
 						}
 					}
 				});
 
 				uploader.bind('FilesAdded', updateList);
+				uploader.bind('UploadComplete', function() {
+                    jQuery('#' + id + '_filelist_dgLabel').html('Загрузка завершена');
+                });
 
 				uploader.bind('FilesRemoved', function() {
 					// since the whole file list is redrawn for every change in the queue
@@ -407,7 +430,8 @@ used as it is.
 
 				uploader.bind("UploadProgress", function(up, file) {
 					// Set file specific progress
-					$('#' + file.id + ' div.plupload_file_status', target).html(file.percent + '%');
+					//$('#' + file.id + ' div.plupload_file_status'/*, target*/).html(file.percent + '%');
+					$('#' + file.id + ' div.progress-bar').css('width',file.percent + '%');
 
 					handleStatus(file);
 					updateTotalProgress();
