@@ -89,23 +89,15 @@ used as it is.
 				node.remove();
 			}
 		});
-
         target.before(
             '<div id="' + id + '_filelist_dg" class="' + id + '_filelist_dg" style="display:none; max-height: 90%;">' +
                 '<div class="modal-dialog">' +
                     '<div class="modal-content">' +
                         '<div class="modal-header">' +
-                            '<button type="button" class="close"  onclick="jQuery(\'#' + id + '_filelist_dg\').hide()"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
+                            '<button id="' + id + '_filelist_dg_close_btn" type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
                             '<h4 class="modal-title" id="' + id + '_filelist_dgLabel">Файлы загружаются</h4>' +
                         '</div>' +
                         '<div class="modal-body" id="' + id + '_filelist_dg_body">' +
-                            /*'<div class="plupload_filelist_header">' +
-                                //'<div class="plupload_file_name">' + _('Filename') + '</div>' +
-                                '<div class="plupload_file_action">&nbsp;</div>' +
-                                //'<div class="plupload_file_status"><span>' + _('Status') + '</span></div>' +
-                                '<div class="plupload_file_size">' + _('Size') + '</div>' +
-                                '<div class="plupload_clearer">&nbsp;</div>' +
-                            '</div>' +*/
                             '<div class="plupload_progress">' +
                                 '<div class="plupload_progress_container">' +
                                     '<div class="progress">' +
@@ -121,7 +113,6 @@ used as it is.
                                         '<span class="plupload_upload_status"></span>' +
                                     '</div>' +
                                     '<div class="plupload_file_action"></div>' +
-                                    //'<div class="plupload_file_status"><span class="plupload_total_status">0%</span></div>' +
                                     '<div class="plupload_file_size"><span class="plupload_total_file_size">0</span></div>' +
                                 '</div>' +
                                 '<div class="plupload_clearer">&nbsp;</div>' +
@@ -146,6 +137,12 @@ used as it is.
 				'<input type="hidden" id="' + id + '_count" name="' + id + '_count" value="0" />' +
 			'</div>'
 		);
+
+        jQuery('#' + id + '_filelist_dg_close_btn').click(function(){
+            var uploader = jQuery('#'+id).pluploadBody();
+            //console.log(uploader);
+            uploader.hide_filelist(id);
+        });
 	}
 
 	$.fn.pluploadBody = function(settings) {
@@ -205,9 +202,8 @@ used as it is.
 				}
 
 				function updateTotalProgress() {
-					//$('span.plupload_total_status'/*, target*/).html(uploader.total.percent + '%');
 					$('div.plupload_total_progress_bar').css('width', uploader.total.percent + '%');
-					$('span.plupload_upload_status'/*, target*/).html(
+					$('span.plupload_upload_status').html(
 						o.sprintf(_('Uploaded %d/%d files'), uploader.total.uploaded, uploader.files.length)
 					);
 				}
@@ -237,12 +233,10 @@ used as it is.
 								'<a class="plupload_delete"></a>' +
 								'<div class="plupload_file_action"><a href="#"></a></div>' +
                                 '<div class="plupload_file_name"><span>' + file.name + '</span></div>' +
-                                //'<div class="plupload_file_status">' + file.percent + '%</div>' +
                                 '<div class="plupload_file_size">' + plupload.formatSize(file.size) + '</div>' +
                                 '<div class="progress">' +
                                     '<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">&nbsp;</div>' +
                                 '</div>' +
-								//'<div class="plupload_clearer">&nbsp;</div>' +
 								inputHTML +
 							'</li>'
 						);

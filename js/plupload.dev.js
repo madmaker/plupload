@@ -2084,6 +2084,16 @@ plupload.Uploader = function(options) {
 		 * @method unbindAll
 		 */
 
+        hide_filelist: function (id) {
+            if(this.state==1) {
+                console.log('clear');
+                this.splice();
+                this.refresh();
+            }
+            else console.log('dont clear');
+            jQuery('#'+id+'_filelist_dg').hide();
+        },
+
 
 		/**
 		 * Destroys Plupload instance and cleans after itself.
