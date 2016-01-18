@@ -106,10 +106,10 @@ used as it is.
                             '</div>' +
                             '<div class="plupload_filelist_footer">' +
                                 '<div class="plupload_file_name">' +
-                                    '<div class="plupload_buttons">' +
+                                    /*'<div class="plupload_buttons">' +
                                         '<a href="#" class="plupload_button plupload_add" id="' + id + '_browse">' + _('Add Files') + '</a>' +
                                         '<a href="#" class="plupload_button plupload_start">' + _('Start Upload') + '</a>' +
-                                    '</div>' +
+                                    '</div>' +*/
                                         '<span class="plupload_upload_status"></span>' +
                                     '</div>' +
                                     '<div class="plupload_file_action"></div>' +
