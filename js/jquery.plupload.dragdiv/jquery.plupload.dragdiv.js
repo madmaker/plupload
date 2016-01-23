@@ -409,10 +409,7 @@
 				uploader.bind('FilesAdded', updateList);
 				uploader.bind('UploadComplete', function() {
                     jQuery('#' + id + '_filelist_dgLabel').html('Загрузка завершена');
-                    jQuery('#uploader_filelist_dg').hide('slide', { direction: 'right', easing: 'easeOutBounce' },
-                        1200, function(){});
-                    this.splice();
-                    //jQuery('#' + id + '_filelist_dg').delay(30000000).hide();
+                    setTimeout('jQuery("#uploader_filelist_dg").hide("slide", { direction: "right", easing: "easeOutBounce" },1200, function(){}); var uploader=jQuery("#'+id+'"); uploader.splice();',2000);
                 });
 
 				uploader.bind('FilesRemoved', function() {
