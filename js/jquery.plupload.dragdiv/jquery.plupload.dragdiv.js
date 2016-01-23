@@ -4,9 +4,9 @@
  PHP:
  Нужно подключить js-скрипты
  //pluploader
- $this->uFunc->incJs(u_sroot.'js/plupload/js/plupload.full.js');
- $this->uFunc->incJs(u_sroot.'js/plupload/js/i18n/ru.js');
- $this->uFunc->incJs(u_sroot.'js/plupload/js/jquery.plupload.dragdiv/jquery.plupload.dragdiv.js');
+ $this->uFunc->incJs(u_sroot.'js/plupload/js/plupload.full.min.js');
+ $this->uFunc->incJs(u_sroot.'js/plupload/js/i18n/ru.min.js');
+ $this->uFunc->incJs(u_sroot.'js/plupload/js/jquery.plupload.dragdiv/jquery.plupload.dragdiv.min.js');
  $this->uFunc->incCss(u_sroot.'js/plupload/js/jquery.plupload.dragdiv/css/jquery.plupload.queue.css');
 
  JS:
