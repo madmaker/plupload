@@ -111,8 +111,7 @@
 		);
 
         jQuery('#' + id + '_filelist_dg_close_btn').click(function(){
-            var uploader = jQuery('#'+id).pluploadBody();
-            //console.log(uploader);
+            var uploader = jQuery('#'+id).pluploadDragDiv();
             uploader.hide_filelist(id);
         });
 	}
@@ -272,12 +271,6 @@
 					fileList[0].scrollTop = fileList[0].scrollHeight;
 
 					updateTotalProgress();
-
-					// Re-add drag message if there is no files
-					if (!uploader.files.length && uploader.features.dragdrop && uploader.settings.dragdrop) {
-						$('#' + id + '_droparea').append('<li><button class="btn btn-sm btn-default pull-right" onclick="jQuery(\'#\'+id).css(\'left\',0).css(\'top\',0).css(\'width\',\'1px\').css(\'height\',\'1px\')"><span class="glyphicon glyphicon-remove"></span></button></li>');
-						$('#' + id + '_droparea').append('<li class="plupload_droptext"><span class="icon-upload-cloud"></span>' +/* _("Drag files here.") +*/ '</li>');
-					}
 				}
 
 				function destroy() {
@@ -416,6 +409,10 @@
 				uploader.bind('FilesAdded', updateList);
 				uploader.bind('UploadComplete', function() {
                     jQuery('#' + id + '_filelist_dgLabel').html('Загрузка завершена');
+                    jQuery('#uploader_filelist_dg').hide('slide', { direction: 'right', easing: 'easeOutBounce' },
+                        1200, function(){});
+                    this.splice();
+                    //jQuery('#' + id + '_filelist_dg').delay(30000000).hide();
                 });
 
 				uploader.bind('FilesRemoved', function() {
