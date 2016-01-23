@@ -1,77 +1,50 @@
 /**
- * jquery.plupload.queue.js
+ * Как установить:
  *
- * Copyright 2009, Moxiecode Systems AB
- * Released under GPL License.
- *
- * License: http://www.plupload.com/license
- * Contributing: http://www.plupload.com/contributing
- */
+ PHP:
+ Нужно подключить js-скрипты
+ //pluploader
+ $this->uFunc->incJs(u_sroot.'js/plupload/js/plupload.full.js');
+ $this->uFunc->incJs(u_sroot.'js/plupload/js/i18n/ru.js');
+ $this->uFunc->incJs(u_sroot.'js/plupload/js/jquery.plupload.dragdiv/jquery.plupload.dragdiv.js');
+ $this->uFunc->incCss(u_sroot.'js/plupload/js/jquery.plupload.dragdiv/css/jquery.plupload.queue.css');
 
-/* global jQuery:true, alert:true */
+ JS:
+ Нужно выполнить следующую функцию
+ jQuery('#uploader').pluploadDragDiv({
+        url: u_sroot+u_mod+'/my_drive_uploader',
+        multipart_params: {
+            folder_id: uDrive_my_drive.cur_folder_id,
+            hash: uDrive_my_drive.sessions_hack_hash,
+            hashId: uDrive_my_drive.sessions_hack_id
+        },
+        init : {
+            FileUploaded: function(up, file, info) {
+                var response = eval('(' + info.response + ')');
+                if(response['status']=='error') {
+                    pnotify_fc.show_stack_bar_top('Ошибка',response['message'],"error");
+                }
+                else if (response['status']=='done') {
+                    uDrive_my_drive.add_file2array(response);
+                    uDrive_my_drive.print_page();
+                }
+            }
+        }
+ });
 
-/**
-jQuery based implementation of the Plupload API - multi-runtime file uploading API.
+ HTML:
+ <div id="uploader" class="uDrive_uploader_wrapper"></div> - слой на самом верху - при drag-n-drop появляется
+ <div id="uDrive_uploader_container" style="min-height: 100%;" class="uDrive uploader_droparea"></div> - Слой, куда перетаскивать. Собственно здесь обычно список файлов
 
-To use the widget you must include _jQuery_. It is not meant to be extended in any way and is provided to be
-used as it is.
+ * Обратите внимание:
 
-@example
-	<!-- Instantiating: -->
-	<div id="uploader">
-		<p>Your browser doesn't have Flash, Silverlight or HTML5 support.</p>
-	</div>
-
-	<script>
-		$('#uploader').pluploadQueue({
-			url : '../upload.php',
-			filters : [
-				{title : "Image files", extensions : "jpg,gif,png"}
-			],
-			rename: true,
-			flash_swf_url : '../../js/Moxie.swf',
-			silverlight_xap_url : '../../js/Moxie.xap',
-		});
-	</script>
-
-@example
-	// Retrieving a reference to plupload.Uploader object
-	var uploader = $('#uploader').pluploadQueue();
-
-	uploader.bind('FilesAdded', function() {
-		
-		// Autostart
-		setTimeout(uploader.start, 1); // "detach" from the main thread
-	});
-
-@class pluploadQueue
-@constructor
-@param {Object} settings For detailed information about each option check documentation.
-	@param {String} settings.url URL of the server-side upload handler.
-	@param {Number|String} [settings.chunk_size=0] Chunk size in bytes to slice the file into. Shorcuts with b, kb, mb, gb, tb suffixes also supported. `e.g. 204800 or "204800b" or "200kb"`. By default - disabled.
-	@param {String} [settings.file_data_name="file"] Name for the file field in Multipart formated message.
-	@param {Array} [settings.filters=[]] Set of file type filters, each one defined by hash of title and extensions. `e.g. {title : "Image files", extensions : "jpg,jpeg,gif,png"}`. Dispatches `plupload.FILE_EXTENSION_ERROR`
-	@param {String} [settings.flash_swf_url] URL of the Flash swf.
-	@param {Object} [settings.headers] Custom headers to send with the upload. Hash of name/value pairs.
-	@param {Number|String} [settings.max_file_size] Maximum file size that the user can pick, in bytes. Optionally supports b, kb, mb, gb, tb suffixes. `e.g. "10mb" or "1gb"`. By default - not set. Dispatches `plupload.FILE_SIZE_ERROR`.
-	@param {Number} [settings.max_retries=0] How many times to retry the chunk or file, before triggering Error event.
-	@param {Boolean} [settings.multipart=true] Whether to send file and additional parameters as Multipart formated message.
-	@param {Object} [settings.multipart_params] Hash of key/value pairs to send with every file upload.
-	@param {Boolean} [settings.multi_selection=true] Enable ability to select multiple files at once in file dialog.
-	@param {Boolean} [settings.prevent_duplicates=false] Do not let duplicates into the queue. Dispatches `plupload.FILE_DUPLICATE_ERROR`.
-	@param {String|Object} [settings.required_features] Either comma-separated list or hash of required features that chosen runtime should absolutely possess.
-	@param {Object} [settings.resize] Enable resizng of images on client-side. Applies to `image/jpeg` and `image/png` only. `e.g. {width : 200, height : 200, quality : 90, crop: true}`
-		@param {Number} [settings.resize.width] If image is bigger, it will be resized.
-		@param {Number} [settings.resize.height] If image is bigger, it will be resized.
-		@param {Number} [settings.resize.quality=90] Compression quality for jpegs (1-100).
-		@param {Boolean} [settings.resize.crop=false] Whether to crop images to exact dimensions. By default they will be resized proportionally.
-	@param {String} [settings.runtimes="html5,flash,silverlight,html4"] Comma separated list of runtimes, that Plupload will try in turn, moving to the next if previous fails.
-	@param {String} [settings.silverlight_xap_url] URL of the Silverlight xap.
-	@param {Boolean} [settings.unique_names=false] If true will generate unique filenames for uploaded files.
-
-	@param {Boolean} [settings.dragdrop=true] Enable ability to add file to the queue by drag'n'dropping them from the desktop.
-	@param {Boolean} [settings.rename=false] Enable ability to rename files in the queue.
-	@param {Boolean} [settings.multiple_queues=true] Re-activate the widget after each upload procedure.
+ По умолчанию устанавливаются следующие настройки:
+ runtimes='html5,flash,silverlight,html4';
+ flash_swf_url='js/plupload/js/Moxie.swf';
+ silverlight_xap_url='js/plupload/js/Moxie.xap';
+ max_file_size='500mb';
+ chunk_size='900kb';
+ unique_names=false;
 */
 ;(function($, o) {
 	var uploaders = {};
@@ -129,7 +102,6 @@ used as it is.
 				'<div id="' + id + '_container" class="plupload_container" style="width:100%; height: 100%">' +
 					'<div class="plupload" style="width:100%; height: 100%">' +
 						'<div class="plupload_content" style="width:100%; height: 100%">' +
-                            '<button class="btn btn-sm btn-default pull-right" onclick="jQuery(\'#' + id+'\').hide();"><span class="glyphicon glyphicon-remove"></span></button>' +
 							'<ul id="' + id + '_droparea" class="plupload_droparea" style="width:100%; height: 100%"></ul>' +
 						'</div>' +
 					'</div>' +
@@ -145,7 +117,32 @@ used as it is.
         });
 	}
 
-	$.fn.pluploadBody = function(settings) {
+    function renderDropArea(id,settings) {
+        jQuery(settings.droparea).on({
+            dragenter: function(e) {
+                var offset = jQuery(settings.droparea).offset();
+                var width = jQuery(settings.droparea).width();
+                var height = jQuery(settings.droparea).width();
+                jQuery("#"+id).css('left',offset.left).css('top',offset.top).css('width',width+'px').css('height',height+'px');
+                jQuery("#"+id+' .plupload_droptext').show();
+            }
+        });
+        jQuery('#'+id).on({
+            dragleave: function(e) {
+                jQuery("#"+id).css('left',0).css('top',0).css('width','1px').css('height','1px');
+                jQuery("#"+id+' .plupload_droptext').hide();
+            },
+            drop: function(e) {
+                jQuery("#"+id).css('left',0).css('top',0).css('width','1px').css('height','1px');
+                jQuery("#"+id+' .plupload_droptext').hide();
+
+                e.stopPropagation();
+                e.preventDefault();
+            }
+        });
+    }
+
+	$.fn.pluploadDragDiv = function(settings) {
 		if (settings) {
 			this.each(function() {
 				var uploader, target, id, contents_bak;
@@ -164,8 +161,18 @@ used as it is.
 				settings = $.extend({
 					dragdrop : true,
 					browse_button : id + '_browse',
-					container : id
+					container : id,
+                    droparea:'.'+id+'_droparea'
 				}, settings);
+
+                if(typeof settings.runtimes === 'undefined') settings.runtimes='html5,flash,silverlight,html4';
+                if(typeof settings.flash_swf_url === 'undefined') settings.flash_swf_url='js/plupload/js/Moxie.swf';
+                if(typeof settings.silverlight_xap_url === 'undefined') settings.silverlight_xap_url='js/plupload/js/Moxie.xap';
+                if(typeof settings.max_file_size === 'undefined') settings.max_file_size='500mb';
+                if(typeof settings.chunk_size === 'undefined') settings.chunk_size='900kb';
+                if(typeof settings.unique_names === 'undefined') settings.unique_names=false;
+
+                renderDropArea(id,settings);
 
 				// Enable drag/drop (see PostInit handler as well)
 				if (settings.dragdrop) {
@@ -268,7 +275,8 @@ used as it is.
 
 					// Re-add drag message if there is no files
 					if (!uploader.files.length && uploader.features.dragdrop && uploader.settings.dragdrop) {
-						$('#' + id + '_droparea').append('<li class="plupload_droptext"><span class="icon-upload-cloud"></span>' + _("Drag files here.") + '</li>');
+						$('#' + id + '_droparea').append('<li><button class="btn btn-sm btn-default pull-right" onclick="jQuery(\'#\'+id).css(\'left\',0).css(\'top\',0).css(\'width\',\'1px\').css(\'height\',\'1px\')"><span class="glyphicon glyphicon-remove"></span></button></li>');
+						$('#' + id + '_droparea').append('<li class="plupload_droptext"><span class="icon-upload-cloud"></span>' +/* _("Drag files here.") +*/ '</li>');
 					}
 				}
 
@@ -372,6 +380,7 @@ used as it is.
 				uploader.bind("PostInit", function(up) {
 					// features are populated only after input components are fully instantiated
 					if (up.settings.dragdrop && up.features.dragdrop) {
+                        $('#' + id + '_droparea').append('<li><button class="btn btn-sm btn-default pull-right" onclick="jQuery(\'#\'+id).css(\'left\',0).css(\'top\',0).css(\'width\',\'1px\').css(\'height\',\'1px\')"><span class="glyphicon glyphicon-remove"></span></button></li>');
 						$('#' + id + '_droparea').append('<li class="plupload_droptext"><span class="icon-upload-cloud"></span></li>');
 					}
 				});
@@ -381,7 +390,7 @@ used as it is.
 				uploader.bind('StateChanged', function() {
 					if (uploader.state === plupload.STARTED) {
 						$('li.plupload_delete a,div.plupload_buttons'/*, target*/).hide();
-						uploader.disableBrowse(true);
+						//uploader.disableBrowse(true);
 
 						$('span.plupload_upload_status,div.plupload_progress,a.plupload_stop'/*, target*/).css('display', 'block');
 						$('span.plupload_upload_status'/*, target*/).html('Uploaded ' + uploader.total.uploaded + '/' + uploader.files.length + ' files');
@@ -396,7 +405,7 @@ used as it is.
 
 						if (settings.multiple_queues && uploader.total.uploaded + uploader.total.failed == uploader.files.length) {
 							$(".plupload_buttons,.plupload_upload_status"/*, target*/).css("display", "inline");
-							uploader.disableBrowse(false);
+							//uploader.disableBrowse(false);
 
 							$(".plupload_start"/*, target*/).addClass("plupload_disabled");
 							$('span.plupload_total_status,span.plupload_total_file_size'/*, target*/).hide();
