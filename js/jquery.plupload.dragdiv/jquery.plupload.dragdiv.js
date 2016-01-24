@@ -373,7 +373,7 @@
 				uploader.bind("PostInit", function(up) {
 					// features are populated only after input components are fully instantiated
 					if (up.settings.dragdrop && up.features.dragdrop) {
-                        $('#' + id + '_droparea').append('<li><button class="btn btn-sm btn-default pull-right" onclick="jQuery(\'#\'+id).css(\'left\',0).css(\'top\',0).css(\'width\',\'1px\').css(\'height\',\'1px\')"><span class="glyphicon glyphicon-remove"></span></button></li>');
+                        $('#' + id + '_droparea').append('<li><button class="btn btn-sm btn-default pull-right" onclick="jQuery(\'#'+id+'\').css(\'left\',0).css(\'top\',0).css(\'width\',\'1px\').css(\'height\',\'1px\')"><span class="glyphicon glyphicon-remove"></span></button></li>');
 						$('#' + id + '_droparea').append('<li class="plupload_droptext"><span class="icon-upload-cloud"></span></li>');
 					}
 				});
