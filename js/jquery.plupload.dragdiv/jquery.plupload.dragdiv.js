@@ -1,16 +1,26 @@
 /**
  * Как установить:
  *
- PHP:
+ * ***************************
+ * PHP:
+ * ***************************
  Нужно подключить js-скрипты
+ ***************************
  //pluploader
  $this->uFunc->incJs(u_sroot.'js/plupload/js/plupload.full.min.js');
  $this->uFunc->incJs(u_sroot.'js/plupload/js/i18n/ru.min.js');
  $this->uFunc->incJs(u_sroot.'js/plupload/js/jquery.plupload.dragdiv/jquery.plupload.dragdiv.min.js');
  $this->uFunc->incCss(u_sroot.'js/plupload/js/jquery.plupload.dragdiv/css/jquery.plupload.queue.css');
+ //phpjs
+ $this->uFunc->incJs(u_sroot.'js/php/date.js');
+ //filesize
+ $this->uFunc->incJs(u_sroot.'js/filesize.js/lib/filesize.min.js');
 
- JS:
+ * ***************************
+ *  JS:
+ * ***************************
  Нужно выполнить следующую функцию
+ ***************************
  jQuery('#uploader').pluploadDragDiv({
         url: u_sroot+u_mod+'/my_drive_uploader',
         multipart_params: {
@@ -32,19 +42,45 @@
         }
  });
 
- HTML:
+ На каждый window resize или отображение/скрытие/перемещение кнопки обзор (если есть такая) нужно выполнять
+ ***************************
+ jQuery('#uploader').pluploadDragDiv().refresh();
+
+ Код resize:
+ ***************************
+ jQuery(window).resize(function(){
+ });
+
+ Также рекомендуется высоту filelist подгонять под размер окна (чтобы было куда перетаскивать, если файлов нет в папке)
+ ***************************
+
+ uDrive_my_drive.set_filelist_height=function() {
+    jQuery("#uDrive_my_drive_file_li_0").css('min-height','');
+    var doc_height=jQuery(document).height();
+    var offset_top=jQuery("#uDrive_my_drive_file_li_0").offset().top;
+    jQuery("#uDrive_my_drive_file_li_0").css('min-height',doc_height-offset_top+'px');
+ }
+
+ * ***************************
+ * HTML:
+ * ***************************
  <div id="uploader" class="uDrive_uploader_wrapper"></div> - слой на самом верху - при drag-n-drop появляется
- <div id="uDrive_uploader_container" style="min-height: 100%;" class="uDrive uploader_droparea"></div> - Слой, куда перетаскивать. Собственно здесь обычно список файлов
+ <div id="uDrive_uploader_container" style="min-height: 100%;" class="uDrive uploader_droparea">
+    <div id="uDrive_my_drive_file_list_container" class="uDrive_files_container"></div>
+ </div> - Слой, куда перетаскивать. Собственно здесь обычно список файлов
+ <a href="javascript:void(0)" class="btn btn-default" id="uploader_browse"><span class="icon-upload-cloud"></span>Загрузить файлы</a>
+ Без кнопки "Обзор" не работает!:
+ ***************************
 
- * Обратите внимание:
-
- По умолчанию устанавливаются следующие настройки:
+ * Обратите внимание. По умолчанию устанавливаются следующие настройки:
+ ***************************
  runtimes='html5,flash,silverlight,html4';
  flash_swf_url='js/plupload/js/Moxie.swf';
  silverlight_xap_url='js/plupload/js/Moxie.xap';
  max_file_size='500mb';
  chunk_size='900kb';
  unique_names=false;
+ droparea_fullscreen=false;//Отображать droparea на весь экран или подстраивать под контейнер
 */
 ;(function($, o) {
 	var uploaders = {};
@@ -62,8 +98,8 @@
 				node.remove();
 			}
 		});
-        target.before(
-            '<div id="' + id + '_filelist_dg" class="' + id + '_filelist_dg" style="display:none; max-height: 90%;">' +
+        target.after(
+            '<div id="' + id + '_filelist_dg" class="' + id + '_filelist_dg uploader_filelist_dg" style="display:none; max-height: 90%;">' +
                 '<div class="modal-dialog">' +
                     '<div class="modal-content">' +
                         '<div class="modal-header">' +
@@ -111,18 +147,23 @@
 		);
 
         jQuery('#' + id + '_filelist_dg_close_btn').click(function(){
-            var uploader = jQuery('#'+id).pluploadDragDiv();
-            uploader.hide_filelist(id);
+            jQuery('#'+id).pluploadDragDiv().splice();
+            jQuery("#"+id+"_filelist_dg").hide("slide", { direction: "right", easing: "easeOutBounce" },1200, function(){});
         });
 	}
 
     function renderDropArea(id,settings) {
         jQuery(settings.droparea).on({
             dragenter: function(e) {
-                var offset = jQuery(settings.droparea).offset();
-                var width = jQuery(settings.droparea).width();
-                var height = jQuery(settings.droparea).width();
-                jQuery("#"+id).css('left',offset.left).css('top',offset.top).css('width',width+'px').css('height',height+'px');
+                if(!settings.droparea_fullscreen) {
+                    var offset = jQuery(settings.droparea).offset();
+                    var width = jQuery(settings.droparea).width();
+                    var height = jQuery(settings.droparea).width();
+                    jQuery("#"+id).css('left',offset.left).css('top',offset.top).css('width',width+'px').css('height',height+'px');
+                }
+                else {
+                    jQuery("#"+id).css('left','0').css('top','0').css('width','100%').css('height','100%');
+                }
                 jQuery("#"+id+' .plupload_droptext').show();
             }
         });
@@ -161,7 +202,8 @@
 					dragdrop : true,
 					browse_button : id + '_browse',
 					container : id,
-                    droparea:'.'+id+'_droparea'
+                    droparea:'.'+id+'_droparea',
+                    droparea_fullscreen:false
 				}, settings);
 
                 if(typeof settings.runtimes === 'undefined') settings.runtimes='html5,flash,silverlight,html4';
@@ -409,7 +451,7 @@
 				uploader.bind('FilesAdded', updateList);
 				uploader.bind('UploadComplete', function() {
                     jQuery('#' + id + '_filelist_dgLabel').html('Загрузка завершена');
-                    setTimeout('jQuery("#uploader_filelist_dg").hide("slide", { direction: "right", easing: "easeOutBounce" },1200, function(){}); var uploader=jQuery("#'+id+'"); uploader.splice();',2000);
+                    setTimeout('jQuery("#'+id+'_filelist_dg").hide("slide", { direction: "right", easing: "easeOutBounce" },1200, function(){}); var uploader=jQuery("#'+id+'"); uploader.splice();',2000);
                 });
 
 				uploader.bind('FilesRemoved', function() {
