@@ -28,6 +28,7 @@
             hash: uDrive_my_drive.sessions_hack_hash,
             hashId: uDrive_my_drive.sessions_hack_id
         },
+        droparea:"uploader_file_droparea",
         init : {
             FileUploaded: function(up, file, info) {
                 var response = eval('(' + info.response + ')');
@@ -64,8 +65,9 @@
  * ***************************
  * HTML:
  * ***************************
- <div id="uploader" class="uDrive_uploader_wrapper"></div> - слой на самом верху - при drag-n-drop появляется
- <div id="uDrive_uploader_container" style="min-height: 100%;" class="uDrive uploader_droparea">
+ * ВНИМАНИЕ!!! нельзя давать id, id+_droparea типа plupload_droparea - такой уже используется. Нужно давать например plupload_file_droparea
+ <div id="uploader" class="uploader_dragdiv_wrapper"></div> - слой на самом верху - при drag-n-drop появляется
+ <div id="plupload_file_droparea" style="min-height: 100%;" class="uDrive">
     <div id="uDrive_my_drive_file_list_container" class="uDrive_files_container"></div>
  </div> - Слой, куда перетаскивать. Собственно здесь обычно список файлов
  <a href="javascript:void(0)" class="btn btn-default" id="uploader_browse"><span class="icon-upload-cloud"></span>Загрузить файлы</a>
@@ -99,7 +101,7 @@
 			}
 		});
         target.after(
-            '<div id="' + id + '_filelist_dg" class="' + id + '_filelist_dg uploader_filelist_dg" style="display:none; max-height: 90%;">' +
+            '<div id="' + id + '_filelist_dg" class="' + id + '_filelist_dg uploader_dragdiv_filelist_dg" style="display:none; max-height: 90%;">' +
                 '<div class="modal-dialog">' +
                     '<div class="modal-content">' +
                         '<div class="modal-header">' +
@@ -107,26 +109,22 @@
                             '<h4 class="modal-title" id="' + id + '_filelist_dgLabel">Файлы загружаются</h4>' +
                         '</div>' +
                         '<div class="modal-body" id="' + id + '_filelist_dg_body">' +
-                            '<div class="plupload_progress">' +
-                                '<div class="plupload_progress_container">' +
+                            '<div class="plupload_dragdiv_progress">' +
+                                '<div class="plupload_dragdiv_progress_container">' +
                                     '<div class="progress">' +
                                         '<div class="progress-bar plupload_total_progress_bar progress-bar-striped active progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">&nbsp;</div>' +
                                 '</div>' +
                             '</div>' +
-                            '<div class="plupload_filelist_footer">' +
-                                '<div class="plupload_file_name">' +
-                                    /*'<div class="plupload_buttons">' +
-                                        '<a href="#" class="plupload_button plupload_add" id="' + id + '_browse">' + _('Add Files') + '</a>' +
-                                        '<a href="#" class="plupload_button plupload_start">' + _('Start Upload') + '</a>' +
-                                    '</div>' +*/
-                                        '<span class="plupload_upload_status"></span>' +
+                            '<div class="plupload_dragdiv_filelist_footer">' +
+                                '<div class="plupload_dragdiv_file_name">' +
+                                        '<span class="plupload_dragdiv_upload_status"></span>' +
                                     '</div>' +
-                                    '<div class="plupload_file_action"></div>' +
-                                    '<div class="plupload_file_size"><span class="plupload_total_file_size">0</span></div>' +
+                                    '<div class="plupload_dragdiv_file_action"></div>' +
+                                    '<div class="plupload_dragdiv_file_size"><span class="plupload_total_file_size">0</span></div>' +
                                 '</div>' +
-                                '<div class="plupload_clearer">&nbsp;</div>' +
+                                '<div class="clearfix">&nbsp;</div>' +
                             '</div>' +
-                            '<ul id="' + id + '_filelist" class="plupload_filelist"></ul>' +
+                            '<ul id="' + id + '_filelist" class="plupload_dragdiv_filelist"></ul>' +
                         '</div>' +
                     '</div>' +
                 '</div>' +
@@ -134,11 +132,11 @@
         );
 
 		target.prepend(
-			'<div class="plupload_wrapper plupload_scroll" style="width:100%; height: 100%">' +
-				'<div id="' + id + '_container" class="plupload_container" style="width:100%; height: 100%">' +
-					'<div class="plupload" style="width:100%; height: 100%">' +
-						'<div class="plupload_content" style="width:100%; height: 100%">' +
-							'<ul id="' + id + '_droparea" class="plupload_droparea" style="width:100%; height: 100%"></ul>' +
+			'<div class="plupload_dragdiv_wrapper plupload_dragdiv_scroll" style="width:100%; height: 100%">' +
+				'<div id="' + id + '_container" class="plupload_dragdiv_container" style="width:100%; height: 100%">' +
+					'<div style="width:100%; height: 100%">' +
+						'<div class="plupload_dragdiv_content" style="width:100%; height: 100%">' +
+							'<ul id="' + id + '_droparea" class="plupload_dragdiv_droparea" style="width:100%; height: 100%"></ul>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
@@ -164,17 +162,17 @@
                 else {
                     jQuery("#"+id).css('left','0').css('top','0').css('width','100%').css('height','100%');
                 }
-                jQuery("#"+id+' .plupload_droptext').show();
+                jQuery("#"+id+' .plupload_dragdiv_droptext').show();
             }
         });
         jQuery('#'+id).on({
             dragleave: function(e) {
                 jQuery("#"+id).css('left',0).css('top',0).css('width','1px').css('height','1px');
-                jQuery("#"+id+' .plupload_droptext').hide();
+                jQuery("#"+id+' .plupload_dragdiv_droptext').hide();
             },
             drop: function(e) {
                 jQuery("#"+id).css('left',0).css('top',0).css('width','1px').css('height','1px');
-                jQuery("#"+id+' .plupload_droptext').hide();
+                jQuery("#"+id+' .plupload_dragdiv_droptext').hide();
 
                 e.stopPropagation();
                 e.preventDefault();
@@ -202,7 +200,7 @@
 					dragdrop : true,
 					browse_button : id + '_browse',
 					container : id,
-                    droparea:'.'+id+'_droparea',
+                    droparea:'#'+id+'_file_droparea',
                     droparea_fullscreen:false
 				}, settings);
 
@@ -228,22 +226,22 @@
 					var actionClass;
 
 					if (file.status == plupload.DONE) {
-						actionClass = 'plupload_done';
+						actionClass = 'plupload_dragdiv_done';
 					}
 
 					if (file.status == plupload.FAILED) {
-						actionClass = 'plupload_failed';
+						actionClass = 'plupload_dragdiv_failed';
 					}
 
 					if (file.status == plupload.QUEUED) {
-						actionClass = 'plupload_delete';
+						actionClass = 'plupload_dragdiv_delete';
 					}
 
 					if (file.status == plupload.UPLOADING) {
-						actionClass = 'plupload_uploading';
+						actionClass = 'plupload_dragdiv_uploading';
 					}
 
-					var icon = $('#' + file.id).attr('class', actionClass).find('a').css('display', 'block');
+					var icon = $('#' + file.id).attr('class', actionClass + ' clearfix').find('a').css('display', 'block');
 					if (file.hint) {
 						icon.attr('title', file.hint);	
 					}
@@ -251,7 +249,7 @@
 
 				function updateTotalProgress() {
 					$('div.plupload_total_progress_bar').css('width', uploader.total.percent + '%');
-					$('span.plupload_upload_status').html(
+					$('span.plupload_dragdiv_upload_status').html(
 						o.sprintf(_('Uploaded %d/%d files'), uploader.total.uploaded, uploader.files.length)
 					);
 				}
@@ -277,11 +275,11 @@
 						}
 
 						fileList.prepend(
-							'<li id="' + file.id + '" class="plupload_file ui-state-default plupload_file_loading plupload_delete">' +
-								'<a class="plupload_delete"></a>' +
-								'<div class="plupload_file_action"><a href="#"></a></div>' +
-                                '<div class="plupload_file_name"><span>' + file.name + '</span></div>' +
-                                '<div class="plupload_file_size">' + plupload.formatSize(file.size) + '</div>' +
+							'<li id="' + file.id + '" class="clearfix ui-state-default plupload_dragdiv_delete">' +
+								'<a class="plupload_dragdiv_delete"></a>' +
+								'<div class="plupload_dragdiv_file_action"><a href="#"></a></div>' +
+                                '<div class="plupload_dragdiv_file_name"><span>' + file.name + '</span></div>' +
+                                '<div class="plupload_dragdiv_file_size">' + plupload.formatSize(file.size) + '</div>' +
                                 '<div class="progress">' +
                                     '<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">&nbsp;</div>' +
                                 '</div>' +
@@ -291,7 +289,7 @@
 
 						handleStatus(file);
 
-						$('#' + file.id + '.plupload_delete a').click(function(e) {
+						$('#' + file.id + '.plupload_dragdiv_delete a').click(function(e) {
 							$('#' + file.id).remove();
 							uploader.removeFile(file);
 
@@ -302,13 +300,10 @@
 					$('span.plupload_total_file_size').html(plupload.formatSize(uploader.total.size));
 
 					if (uploader.total.queued === 0) {
-						$('span.plupload_add_text'/*, target*/).html(_('Add Files'));
+						$('span.plupload_add_text').html(_('Add Files'));
 					} else {
-						$('span.plupload_add_text'/*, target*/).html(o.sprintf(_('%d files queued'), uploader.total.queued));
+						$('span.plupload_add_text').html(o.sprintf(_('%d files queued'), uploader.total.queued));
 					}
-
-					$('a.plupload_start'/*, target*/).toggleClass('plupload_disabled', uploader.files.length == (uploader.total.uploaded + uploader.total.failed));
-
 					// Scroll to end of file list
 					fileList[0].scrollTop = fileList[0].scrollHeight;
 
@@ -329,7 +324,7 @@
 				uploader.bind('Init', function(up, res) {
 					// Enable rename support
 					if (!settings.unique_names && settings.rename) {
-						target.on('click', '#' + id + '_filelist div.plupload_file_name span', function(e) {
+						target.on('click', '#' + id + '_filelist div.plupload_dragdiv_file_name span', function(e) {
 							var targetSpan = $(e.target), file, parts, name, ext = "";
 
 							// Get file name and split out name and extension
@@ -362,20 +357,10 @@
 
 					$('#' + id + '_container').attr('title', 'Using runtime: ' + res.runtime);
 
-					$('a.plupload_start'/*, target*/).click(function(e) {
-						if (!$(this).hasClass('plupload_disabled')) {
-							uploader.start();
-						}
-
-						e.preventDefault();
-					});
-
-					$('a.plupload_stop'/*, target*/).click(function(e) {
+					$('a.plupload_stop').click(function(e) {
 						e.preventDefault();
 						uploader.stop();
 					});
-
-					$('a.plupload_start'/*, target*/).addClass('plupload_disabled');
 				});
 
                 uploader.bind('FilesAdded', function(up, files) {
@@ -402,7 +387,7 @@
 						}
 						
 						file.hint = message;
-						$('#' + file.id).attr('class', 'plupload_failed').find('a').css('display', 'block').attr('title', message);
+						$('#' + file.id).attr('class', 'plupload_dragdiv_failed').find('a').css('display', 'block').attr('title', message);
 					}
 
 					if (err.code === plupload.INIT_ERROR) {
@@ -416,7 +401,7 @@
 					// features are populated only after input components are fully instantiated
 					if (up.settings.dragdrop && up.features.dragdrop) {
                         $('#' + id + '_droparea').append('<li><button class="btn btn-sm btn-default pull-right" onclick="jQuery(\'#'+id+'\').css(\'left\',0).css(\'top\',0).css(\'width\',\'1px\').css(\'height\',\'1px\')"><span class="glyphicon glyphicon-remove"></span></button></li>');
-						$('#' + id + '_droparea').append('<li class="plupload_droptext"><span class="icon-upload-cloud"></span></li>');
+						$('#' + id + '_droparea').append('<li class="plupload_dragdiv_droptext"><span class="icon-upload-cloud"></span></li>');
 					}
 				});
 
@@ -424,26 +409,23 @@
 
 				uploader.bind('StateChanged', function() {
 					if (uploader.state === plupload.STARTED) {
-						$('li.plupload_delete a,div.plupload_buttons'/*, target*/).hide();
-						//uploader.disableBrowse(true);
+						$('li.plupload_dragdiv_delete a').hide();
 
-						$('span.plupload_upload_status,div.plupload_progress,a.plupload_stop'/*, target*/).css('display', 'block');
-						$('span.plupload_upload_status'/*, target*/).html('Uploaded ' + uploader.total.uploaded + '/' + uploader.files.length + ' files');
+						$('span.plupload_dragdiv_upload_status,div.plupload_dragdiv_progress,a.plupload_stop').css('display', 'block');
+						$('span.plupload_dragdiv_upload_status').html('Uploaded ' + uploader.total.uploaded + '/' + uploader.files.length + ' files');
 
 						if (settings.multiple_queues) {
-							$('span.plupload_total_status,span.plupload_total_file_size'/*, target*/).show();
+							$('span.plupload_total_status,span.plupload_total_file_size').show();
 						}
 					} else {
 						updateList();
-						$('a.plupload_stop,div.plupload_progress'/*, target*/).hide();
-						$('a.plupload_delete'/*, target*/).css('display', 'block');
+						$('a.plupload_stop,div.plupload_dragdiv_progress').hide();
+						$('a.plupload_dragdiv_delete').css('display', 'block');
 
 						if (settings.multiple_queues && uploader.total.uploaded + uploader.total.failed == uploader.files.length) {
-							$(".plupload_buttons,.plupload_upload_status"/*, target*/).css("display", "inline");
-							//uploader.disableBrowse(false);
+							$(".plupload_dragdiv_upload_status").css("display", "inline");
 
-							$(".plupload_start"/*, target*/).addClass("plupload_disabled");
-							$('span.plupload_total_status,span.plupload_total_file_size'/*, target*/).hide();
+							$('span.plupload_total_status,span.plupload_total_file_size').hide();
 						}
 					}
 				});
@@ -451,7 +433,7 @@
 				uploader.bind('FilesAdded', updateList);
 				uploader.bind('UploadComplete', function() {
                     jQuery('#' + id + '_filelist_dgLabel').html('Загрузка завершена');
-                    setTimeout('jQuery("#'+id+'_filelist_dg").hide("slide", { direction: "right", easing: "easeOutBounce" },1200, function(){}); var uploader=jQuery("#'+id+'"); uploader.splice();',2000);
+                    setTimeout('jQuery("#'+id+'_filelist_dg").hide("slide", { direction: "right", easing: "easeOutBounce" },1200, function(){}); jQuery("#'+id+'").pluploadDragDiv().splice();',2000);
                 });
 
 				uploader.bind('FilesRemoved', function() {
@@ -469,7 +451,6 @@
 
 				uploader.bind("UploadProgress", function(up, file) {
 					// Set file specific progress
-					//$('#' + file.id + ' div.plupload_file_status'/*, target*/).html(file.percent + '%');
 					$('#' + file.id + ' div.progress-bar').css('width',file.percent + '%');
 
 					handleStatus(file);

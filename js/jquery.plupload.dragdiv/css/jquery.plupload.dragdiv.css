@@ -1,0 +1,132 @@
+.uploader_dragdiv_wrapper {position: fixed; top: 0; left: 0; z-index: 999999; width: 1px; height: 1px;}
+.uploader_dragdiv_wrapper .plupload_dragdiv_droptext {display: none;}
+
+.uploader_dragdiv_filelist_dg li.plupload_dragdiv_filelist{
+padding: 3px 0;
+}
+.uploader_dragdiv_filelist_dg {
+    z-index: 2;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}
+
+.plupload_dragdiv_wrapper * {
+	box-sizing: content-box;
+    background: url("../../../../../templates/images/common/000000-0.1.png");
+}
+.plupload_dragdiv_content button {
+    color:white;
+}
+
+.plupload_dragdiv_wrapper {
+	font: normal 11px Verdana,sans-serif;
+	width: 100%;
+}
+
+.plupload_dragdiv_container {
+    padding: 0;
+}
+
+.plupload_dragdiv_container input {
+	font: normal 11px Verdana,sans-serif;
+	width: 98%;
+}
+
+.plupload_dragdiv_filelist {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.plupload_dragdiv_droparea {
+    color: white;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.plupload_dragdiv_droparea span{
+    background: none;
+}
+.plupload_dragdiv_filelist span{
+    background: none;
+}
+
+.plupload_dragdiv_scroll .plupload_dragdiv_filelist {
+	height: 185px;
+	overflow-y: scroll;
+}
+
+.plupload_dragdiv_filelist li {
+	padding: 3px 0;
+}
+
+.plupload_dragdiv_filelist_header, .plupload_dragdiv_filelist_footer {
+    background: none;
+}
+
+.plupload_dragdiv_filelist_footer {
+    height: 22px; line-height: 20px; vertical-align: middle;
+}
+.plupload_dragdiv_file_name {float: left; overflow: hidden}
+
+.plupload_dragdiv_file_size {
+	float: right;
+	width: 80px;
+}
+.plupload_dragdiv_file_size, .plupload_dragdiv_file_action {text-align: right;}
+
+.plupload_dragdiv_filelist .plupload_dragdiv_file_name {
+	width: 205px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.plupload_dragdiv_file_action {
+	float: right;
+	width: 16px;
+	height: 16px;
+	margin-left: 15px;
+}
+
+.plupload_dragdiv_file_action * {
+	display: none;
+	width: 16px;
+	height: 16px;
+}
+
+li.plupload_dragdiv_done {color:#AAA}
+li.plupload_dragdiv_done .progress{display: none;}
+
+li.plupload_dragdiv_delete a {
+	background: url('../img/delete.gif');
+}
+
+li.plupload_dragdiv_failed a {
+	cursor: default;
+}
+
+li.plupload_dragdiv_done a {
+	cursor: default;
+}
+
+.plupload_dragdiv_progress, .plupload_dragdiv_upload_status {
+	display: none;
+}
+
+.plupload_dragdiv_progress_container {
+	margin-top: 3px;
+	padding: 1px;
+}
+
+.plupload_dragdiv_scroll .plupload_dragdiv_filelist_header .plupload_dragdiv_file_action, .plupload_dragdiv_scroll .plupload_dragdiv_filelist_footer .plupload_dragdiv_file_action {
+	margin-right: 17px;
+}
+
+li.plupload_dragdiv_droptext {
+	background: transparent;
+	text-align: center;
+	vertical-align: middle;
+	border: 0;
+	line-height: 165px;
+    font-size: 10em;
+}
