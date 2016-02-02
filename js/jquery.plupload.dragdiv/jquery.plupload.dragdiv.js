@@ -101,7 +101,7 @@
 			}
 		});
         target.after(
-            '<div id="' + id + '_filelist_dg" class="' + id + '_filelist_dg uploader_dragdiv_filelist_dg" style="display:none; max-height: 90%;">' +
+            '<div id="' + id + '_filelist_dg" class="' + id + '_filelist_dg uploader_dragdiv_filelist_dg" style="display:none; max-height: 90%; z-index:66002">' +
                 '<div class="modal-dialog">' +
                     '<div class="modal-content">' +
                         '<div class="modal-header">' +
