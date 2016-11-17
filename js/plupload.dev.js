@@ -2086,7 +2086,6 @@ plupload.Uploader = function(options) {
 
         hide_filelist: function (id) {
             if(this.state==1) {
-                console.log('clear');
                 this.splice();
                 this.refresh();
             }
