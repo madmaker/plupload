@@ -204,10 +204,10 @@
                     droparea_fullscreen:false
 				}, settings);
 
-                if(typeof settings.runtimes === 'undefined') settings.runtimes='html5,flash,silverlight,html4';
+                if(typeof settings.runtimes === 'undefined') settings.runtimes='html5';//html5,flash,silverlight,html4
                 if(typeof settings.flash_swf_url === 'undefined') settings.flash_swf_url='js/plupload/js/Moxie.swf';
                 if(typeof settings.silverlight_xap_url === 'undefined') settings.silverlight_xap_url='js/plupload/js/Moxie.xap';
-                if(typeof settings.max_file_size === 'undefined') settings.max_file_size='2048mb';
+                if(typeof settings.max_file_size === 'undefined') settings.max_file_size='10240mb';
                 if(typeof settings.chunk_size === 'undefined') settings.chunk_size='900kb';
                 if(typeof settings.unique_names === 'undefined') settings.unique_names=false;
 
