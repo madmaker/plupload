@@ -13,7 +13,7 @@ padding: 3px 0;
 
 .plupload_dragdiv_wrapper * {
 	box-sizing: content-box;
-    background: url("../../../../../templates/images/common/000000-0.1.png");
+    background: url("../../../../../images/common/000000-0.1.png");
 }
 .plupload_dragdiv_content button {
     color:white;
